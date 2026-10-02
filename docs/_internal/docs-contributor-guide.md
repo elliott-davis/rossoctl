@@ -107,7 +107,7 @@ translation tool reads them also.
 | --- | --- |
 | Simply install the CLI. | Install the CLI. |
 | Please note that the cost is an estimate. | The cost is an estimate. |
-| It's easy to see the traffic. | `abctl observe` shows the traffic. |
+| It's easy to see the traffic. | `agentop observe` shows the traffic. |
 | This will allow you to reduce tokens. | Two experimental plugins reduce the tokens. |
 | We recommend a sidecar. | Use a sidecar on Kubernetes. |
 

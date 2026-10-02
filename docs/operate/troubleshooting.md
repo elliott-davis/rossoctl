@@ -15,9 +15,9 @@ These conditions occur with the laptop install from
 [Quickstart on a laptop](../get-started/laptop.md). You do not need a Kubernetes cluster for this
 part.
 
-<!-- VERIFY v0.9.0: confirm the CA path, the service commands, the log path and the port against a
-     v0.9.0 install. The laptop install (install.sh, abctl service, the launchd/systemd units) is a
-     release target; see cortex#944 and cortex#945. -->
+<!-- VERIFY: verified against v0.8.1 — the CA path (~/.cortex/ca/ca.crt), the port (47600), the
+     launchd label (io.rossoctl.cortex) and the systemd unit (cortex.service) all match
+     cmd/agentop. The install itself is still a release target; see cortex#944 and cortex#945. -->
 
 ### The certificate authority is not trusted
 
@@ -47,7 +47,7 @@ Find the program that holds the port:
 lsof -nP -iTCP@127.0.0.1:47600 -sTCP:LISTEN
 ```
 
-If the program is a previous Cortex service, stop it with `abctl service stop`. If it is another
+If the program is a previous Cortex service, stop it with `agentop service stop`. If it is another
 program, stop that program, or change the ports of Cortex.
 
 ### The service does not start, or starts and stops
@@ -55,7 +55,7 @@ program, stop that program, or change the ports of Cortex.
 Read the status first:
 
 ```bash
-abctl service status
+agentop service status
 ```
 
 On macOS, the service runs under `launchd`. On Linux, it runs under `systemd`. To read the service
@@ -63,7 +63,7 @@ log:
 
 ```bash
 # macOS
-log show --predicate 'process == "authbridge-proxy"' --last 10m
+log show --predicate 'process == "cortex"' --last 10m
 
 # Linux
 journalctl --user -u cortex --since "10 minutes ago"
@@ -90,9 +90,9 @@ cortex#946 and cortex#947.
 
 ### No events appear, though the agent runs
 
-The agent runs, but `abctl observe` shows no events. Check each cause in order:
+The agent runs, but `agentop observe` shows no events. Check each cause in order:
 
-1. **The service does not run.** Run `abctl service status`.
+1. **The service does not run.** Run `agentop service status`.
 2. **The agent does not use the proxy.** For an agent that is not Claude Code, confirm that you set
    the proxy variable and the certificate variable. See
    [Other agents](../get-started/laptop.md#other-agents).
@@ -111,9 +111,9 @@ The agent runs, but `abctl observe` shows no events. Check each cause in order:
 
 ### A figure looks wrong, but it is correct
 
-<!-- VERIFY v0.9.0: each answer below states behaviour read from
-     authbridge/cmd/abctl/README.md on cortex main (the Panes section) and from cmd_cost.go. Confirm
-     each one against a v0.9.0 binary. The `$0.00` answer depends on cortex#1046, which is open. -->
+<!-- VERIFY: verified against v0.8.1 (cmd/agentop/tui) — the em-dash rule, the narrow-terminal drop
+     of the money columns, the SAVED~ marker and the precision rule all hold. The `$0.00` answer
+     describes current behaviour; cortex#1046 would change it, and is open. -->
 
 These conditions are the display that Cortex intends. Each one reads as a defect, and each one is
 not.
@@ -158,8 +158,8 @@ session identifier. Cortex excludes both from the gauge.
 The service log is in the location that the service status reports. To attach a useful report to an
 issue, include:
 
-- The output of `abctl --version`.
-- The output of `abctl service status`.
+- The output of `agentop --version`.
+- The output of `agentop service status`.
 - Your operating system and your architecture (`uname -sm`).
 - The name of your agent, and the model.
 - The last part of the service log, with any secret removed.
